@@ -1,6 +1,7 @@
 import Flex, { FlexItem } from 'styled-flex-component';
 import styled from 'styled-components'
 import PoolSelector from './PoolSelector';
+import MainChart from './MainChart';
 
 const Grid = styled.div`
   padding: 20px 0;
@@ -28,7 +29,7 @@ function MainGrid () {
         </article>
       </div>
       <div className="div2">
-        <article></article>
+        <MainChart />
       </div>
       {/* <div className="div3">
         <article></article>

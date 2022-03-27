@@ -58,7 +58,6 @@ const TdText = styled.div`
 const Liquidation = ({data}) => {
   const {debtAmount, collateralAmount, txHash, blockNumber, bammId} = data
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
-  debugger
   return (
     <tr>
       <td><TdText first={true}>12:59 2022-01-01</TdText></td>
@@ -75,8 +74,8 @@ function LiquidationsHistory () {
   const liquidations = mainStore.liquidationsHistory
   return (
     <Container>
-      <SectionTitle>Liquidations history</SectionTitle>
-      <table>
+      <SectionTitle aria-busy={!liquidations.length}>Liquidations history</SectionTitle>
+      {!!liquidations.length && <table>
         <thead>
           <th><MutedText first={true}>DATE</MutedText></th>
           <th><MutedText>OWNER</MutedText></th>
@@ -88,7 +87,8 @@ function LiquidationsHistory () {
         <tbody>
           {liquidations.map(liq=> <Liquidation data={liq}/>)}
         </tbody>
-      </table>        
+      </table>
+      }
     </Container>
   )
 }
