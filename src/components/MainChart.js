@@ -8,7 +8,17 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
 
 import mainStore from '../stores/main.store';
 
-const container = {height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}
+const containerStyles = {height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}
+
+const tickIntervalMap = {
+  '24H': 1,
+  '7D': 24,
+  '1M': 48,
+  '1Y': 24 * 30,
+}
+
+const daysOfTheWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const monthsOfTheYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const TooltipTemplate = styled.div`
   padding: 20px;
@@ -16,6 +26,17 @@ const TooltipTemplate = styled.div`
   backdrop-filter: blur(13px);
   border-radius: 12px;
 `
+
+const StyledLabel = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: red;
+  /* color: #3E4954; */
+`
+
+const CustomizedLabel = ({value}) => <StyledLabel>{value}</StyledLabel>
 
 const CustomTooltipTitle = styled.div`
 font-style: normal;
@@ -79,51 +100,81 @@ const ChartHeaderButton = styled.div`
     background-color: rgba(19, 194, 101, 0.2);
     transition: background-color 0.3s ease-in-out;
   }
-  &.active {
-    color: #1CAC70;
+  &:before{
+    content: "${({val})=> val}";
   }
+  ${({val, scope})=> val === scope ? "color: #1CAC70;" : ""}
 `
 
 const ChartHeaderContainer = styled.div`
   margin-bottom: 20px;
 `
 
-function ChartHeader () {
+const dateFormatter = (tickItem)=> {
+  const {tvlChartScope} = mainStore
+  let date = new Date(tickItem * 1000)
+  if(tvlChartScope === '24H'){
+    date = date.getHours() + ':00'
+  }
+  if(tvlChartScope === '7D'){
+    date = daysOfTheWeek[date.getDay()]
+  }
+  if(tvlChartScope === '1M' ){
+    date = date.getDate() + '/' + date.getMonth()
+  }                   
+  if(tvlChartScope === '1Y'){
+    date = monthsOfTheYear[date.getMonth()]
+  }          
+
+  debugger
+  return date
+}
+
+const ChartHeader = observer(() => {
+  const {tvlChartScope: scope, setTvlChartScope} = mainStore
+  const timeOptions = ['24H', '7D', '1M', '1Y']
   return (
     <ChartHeaderContainer>
       <Flex justifyBetween>
         <ChartTitle>Total Value Locked</ChartTitle>
         <Flex justifyAround style={{minWidth: '40%'}}>
-          <ChartHeaderButton>24H</ChartHeaderButton>
-          <ChartHeaderButton>7D</ChartHeaderButton>
-          <ChartHeaderButton>1M</ChartHeaderButton>
-          <ChartHeaderButton>1Y</ChartHeaderButton>
+          {timeOptions.map(t=> <ChartHeaderButton val={t} scope={scope} onClick={() => setTvlChartScope(t)}/>)}
         </Flex>
       </Flex>
     </ChartHeaderContainer>
   )
-}
-
+})
 
 function MainChart (props) {
-  if(!mainStore.tvlData.length){
-    return <article style={container} aria-busy="true"></article>
+  const data = mainStore.tvlData
+  const interval = tickIntervalMap[mainStore.tvlChartScope]
+  if(!data.length){
+    return <article style={containerStyles} aria-busy="true"></article>
   }
   return (
     <article>
       <ChartHeader/>
-      <AreaChart width={800} height={400} data={mainStore.tvlData}
-      >
+      <AreaChart baseValue={0}  width={800} height={300} data={data} syncId="anyId">
         <defs>
           <linearGradient id="MyGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="rgba(19, 194, 101, 0.8)" />
             <stop offset="95%" stopColor="rgba(19, 194, 101, 0)" />
+          </linearGradient>          
+          <linearGradient id="MyGradient2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="rgba(172, 76, 188, 0.8)" />
+            <stop offset="95%" stopColor="rgba(172, 76, 188, 0)" />
+          </linearGradient>          
+          <linearGradient id="MyGradient3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="rgba(72, 146, 254, 0.8)" />
+            <stop offset="95%" stopColor="rgba(72, 146, 254, 0)" />
+          </linearGradient>          
+          <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="rgba(255, 86, 157, 0.8)" />
+            <stop offset="95%" stopColor="rgba(255, 86, 157, 0)" />
           </linearGradient>
         </defs>
-        <XAxis dataKey="date">
-          {/* <Label position="insideBottom" value="province" /> */}
-        </XAxis>
-        <YAxis />
+
+        <YAxis hide={true} type="number" domain={['dataMin -10000', 'dataMax + 10000']} />
         <Tooltip content={<CustomTooltip />} />
         <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />
         <Area
@@ -133,6 +184,48 @@ function MainChart (props) {
           strokeWidth="2"
           fillOpacity="1"
           fill="url(#MyGradient)"
+        />        
+        <Area
+          type="monotone"
+          dataKey="imbalance"
+          stroke="rgb(172, 76, 188)"
+          strokeWidth="2"
+          fillOpacity="1"
+          fill="url(#MyGradient2)"
+        />        
+        <Area
+          type="monotone"
+          dataKey="liquidations"
+          stroke="rgba(72, 146, 254, 1)"
+          strokeWidth="2"
+          fillOpacity="1"
+          fill="url(#MyGradient3)"
+        />        
+      </AreaChart>
+    <AreaChart baseValue={0}  width={800} height={50} data={data} syncId="anyId">
+        <defs>
+          <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="rgba(255, 86, 157, 0.8)" />
+            <stop offset="95%" stopColor="rgba(255, 86, 157, 0)" />
+          </linearGradient>
+        </defs>
+        <XAxis 
+          dataKey="date" 
+          tick={{fontSize: 11, fill: '#3E4954'}}
+          scale="time"
+          type="number"
+          domain={[data[0].date, data[data.length - 1].date]}
+          tickFormatter={dateFormatter}
+          interval={interval}
+          >
+        </XAxis>
+      <Area
+          type="monotone"
+          dataKey="pnl"
+          stroke="rgba(255, 86, 157, 1)"
+          strokeWidth="2"
+          fillOpacity="1"
+          fill="url(#MyGradient4)"
         />
       </AreaChart>
     </article>
