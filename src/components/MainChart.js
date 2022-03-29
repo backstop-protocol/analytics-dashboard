@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { observer } from "mobx-react"
 import {DisplayBn} from './Utils'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
-  ReferenceArea, ReferenceLine, ReferenceDot,
+  ReferenceArea, ReferenceLine, ReferenceDot, ResponsiveContainer,
   LabelList, Label } from 'recharts'
 
 import mainStore from '../stores/main.store';
@@ -19,6 +19,38 @@ const tickIntervalMap = {
 
 const daysOfTheWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 const monthsOfTheYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+const colorScheme = {
+  tvl: 'rgba(19, 194, 101, 1)',
+  imbalance: 'rgba(172, 76, 188, 1)',
+  liquidations: 'rgba(72, 146, 254, 1)',
+  pnl: 'rgba(255, 86, 157, 1)'
+}
+
+const transperancy = (rgbaString, transperancy) => rgbaString.replace('1)', transperancy + ')')
+
+const legendItems = [
+  {
+    label: "backstop TVL",
+    color: colorScheme.tvl, 
+    name: "tvlSwitch"
+  },
+  {
+    label: "Imbalance",
+    color: colorScheme.imbalance,
+    name: 'imbalanceSwitch'
+  },
+  {
+    label: "Liquidations",
+    color: colorScheme.liquidations,
+    name: 'liquidationsSwitch'
+  },
+  {
+    label: "PnL",
+    color: colorScheme.pnl,
+    name: 'pnlSwitch'
+  },
+]
 
 const TooltipTemplate = styled.div`
   padding: 20px;
@@ -126,8 +158,62 @@ const dateFormatter = (tickItem)=> {
     date = monthsOfTheYear[date.getMonth()]
   }          
 
-  debugger
   return date
+}
+
+const LegendTitle = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #676767;
+
+  padding-bottom: 20px;
+`
+
+const LegendText = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  color: #000000;
+  width: 50%;
+`
+
+const LegendSwitchContainer = styled.div`
+  [type=checkbox][role=switch]:checked {
+      --background-color: ${({color})=> color};
+      --border-color: ${({color})=> color};
+  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+`
+
+const LegendSwitch = observer(({color, label, name}) => {
+  const checked = mainStore[name]
+  return (
+    <LegendSwitchContainer color={color}>
+      <LegendText>
+        {label}
+      </LegendText>
+      <input checked={checked} onChange={()=>mainStore.toggleSwitch(name)} type="checkbox" id="switch" name="switch" role="switch"/>
+    </LegendSwitchContainer>     
+  )
+})
+
+const SideLegend = ()=> {
+  return (
+    <article style={{maxWidth: '220px', padding: '20px', background: 'rgba(33, 91, 143, 0.04)', marginRight: '-40px'}}>
+      <Flex column>
+        <LegendTitle>
+          SELECT PARAMETERS TO DISPLAY
+        </LegendTitle>
+        {legendItems.map(({label, color, name})=> <LegendSwitch label={label} color={color} name={name}/>)}
+      </Flex>
+    </article>
+  )
 }
 
 const ChartHeader = observer(() => {
@@ -154,80 +240,89 @@ function MainChart (props) {
   return (
     <article>
       <ChartHeader/>
-      <AreaChart baseValue={0}  width={800} height={300} data={data} syncId="anyId">
-        <defs>
-          <linearGradient id="MyGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgba(19, 194, 101, 0.8)" />
-            <stop offset="95%" stopColor="rgba(19, 194, 101, 0)" />
-          </linearGradient>          
-          <linearGradient id="MyGradient2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgba(172, 76, 188, 0.8)" />
-            <stop offset="95%" stopColor="rgba(172, 76, 188, 0)" />
-          </linearGradient>          
-          <linearGradient id="MyGradient3" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgba(72, 146, 254, 0.8)" />
-            <stop offset="95%" stopColor="rgba(72, 146, 254, 0)" />
-          </linearGradient>          
-          <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgba(255, 86, 157, 0.8)" />
-            <stop offset="95%" stopColor="rgba(255, 86, 157, 0)" />
-          </linearGradient>
-        </defs>
+      <Flex justifyBetween>
+        <div style={{width: '100%'}}>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart baseValue={0} data={data} syncId="anyId">
+              <defs>
+                <linearGradient id="MyGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={transperancy(colorScheme.tvl, 0.8)} />
+                  <stop offset="95%" stopColor={transperancy(colorScheme.tvl, 0)} />
+                </linearGradient>          
+                <linearGradient id="MyGradient2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={transperancy(colorScheme.imbalance, 0.8)} />
+                  <stop offset="95%" stopColor={transperancy(colorScheme.imbalance, 0)} />
+                </linearGradient>          
+                <linearGradient id="MyGradient3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={transperancy(colorScheme.liquidations, 0.8)} />
+                  <stop offset="95%" stopColor={transperancy(colorScheme.liquidations, 0)} />
+                </linearGradient>          
+              </defs>
 
-        <YAxis hide={true} type="number" domain={['dataMin -10000', 'dataMax + 10000']} />
-        <Tooltip content={<CustomTooltip />} />
-        <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />
-        <Area
-          type="monotone"
-          dataKey="tvl"
-          stroke="rgba(19, 194, 101)"
-          strokeWidth="2"
-          fillOpacity="1"
-          fill="url(#MyGradient)"
-        />        
-        <Area
-          type="monotone"
-          dataKey="imbalance"
-          stroke="rgb(172, 76, 188)"
-          strokeWidth="2"
-          fillOpacity="1"
-          fill="url(#MyGradient2)"
-        />        
-        <Area
-          type="monotone"
-          dataKey="liquidations"
-          stroke="rgba(72, 146, 254, 1)"
-          strokeWidth="2"
-          fillOpacity="1"
-          fill="url(#MyGradient3)"
-        />        
-      </AreaChart>
-    <AreaChart baseValue={0}  width={800} height={50} data={data} syncId="anyId">
-        <defs>
-          <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgba(255, 86, 157, 0.8)" />
-            <stop offset="95%" stopColor="rgba(255, 86, 157, 0)" />
-          </linearGradient>
-        </defs>
-        <XAxis 
-          dataKey="date" 
-          tick={{fontSize: 11, fill: '#3E4954'}}
-          scale="time"
-          type="number"
-          domain={[data[0].date, data[data.length - 1].date]}
-          tickFormatter={dateFormatter}
-          interval={interval}
-          >
-        </XAxis>
-      <Area
-          type="monotone"
-          dataKey="pnl"
-          stroke="rgba(255, 86, 157, 1)"
-          strokeWidth="2"
-          fillOpacity="1"
-          fill="url(#MyGradient4)"
-        />
-      </AreaChart>
+              <YAxis hide={true} type="number" domain={['dataMin -10000', 'dataMax + 10000']} />
+              <Tooltip content={<CustomTooltip />} />
+              <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />
+              <Area
+                hide={!mainStore.tvlSwitch}
+                type="monotone"
+                dataKey="tvl"
+                stroke={colorScheme.tvl}
+                strokeWidth="2"
+                fillOpacity="1"
+                fill="url(#MyGradient)"
+              />        
+              <Area
+                hide={!mainStore.imbalanceSwitch}
+                type="monotone"
+                dataKey="imbalance"
+                stroke={colorScheme.imbalance}
+                strokeWidth="2"
+                fillOpacity="1"
+                fill="url(#MyGradient2)"
+              />        
+              <Area
+                hide={!mainStore.liquidationsSwitch}
+                type="monotone"
+                dataKey="liquidations"
+                stroke={colorScheme.liquidations}
+                strokeWidth="2"
+                fillOpacity="1"
+                fill="url(#MyGradient3)"
+              />        
+            </AreaChart>
+          </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height={50}>
+            <AreaChart baseValue={0} data={data} syncId="anyId">
+            <defs>
+              <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={transperancy(colorScheme.pnl, 0.8)} />
+                <stop offset="95%" stopColor={transperancy(colorScheme.pnl, 0)} />
+              </linearGradient>
+            </defs>
+            <XAxis 
+              dataKey="date" 
+              tick={{fontSize: 11, fill: '#3E4954'}}
+              scale="time"
+              type="number"
+              domain={[data[0].date, data[data.length - 1].date]}
+              tickFormatter={dateFormatter}
+              interval={interval}
+              >
+            </XAxis>
+          <Area
+              hide={!mainStore.pnlSwitch}
+              type="monotone"
+              dataKey="pnl"
+              stroke={colorScheme.pnl}
+              strokeWidth="2"
+              fillOpacity="1"
+              fill="url(#MyGradient4)"
+            />
+          </AreaChart>
+          </ResponsiveContainer>
+        </div>
+        <SideLegend/>
+      </Flex>
     </article>
   )
 }

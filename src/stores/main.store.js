@@ -7,7 +7,7 @@ const hoursMap = {
   '24H': 24,
   '7D': 24 * 7,
   '1M': 24 * 30,
-  '1Y': 1000,
+  '1Y': 6000,
 }
 
 const {fromWei, toBN} = Web3.utils
@@ -44,6 +44,10 @@ class MainStore {
   tvlData = []
   tvlImbalanceData = []
   tvlChartScope = '24H'
+  tvlSwitch = true
+  imbalanceSwitch = true
+  liquidationsSwitch = true
+  pnlSwitch = true
   constructor() {
     makeAutoObservable(this)
     this.pools = poolConfigs.map(config => new PoolStore(config))
@@ -53,6 +57,10 @@ class MainStore {
 
   get poolsToFetch() {
    return this.pools.filter(p => p.switchedOn)
+  }
+
+  toggleSwitch = (switchName) => {
+    this[switchName] = !this[switchName]
   }
 
   setTvlChartScope = timeScope => {
@@ -95,54 +103,37 @@ class MainStore {
     try{
       // TODO: store months and fetch months instead 
       const hours = hoursMap[this.tvlChartScope]
-      const promises = this.poolsToFetch.map(pool => {
-        if (hours > 1000){
-          const singleBammPromises = []
-          for(let i = 0; i < hours; i = i + 1000){
-            debugger
-            let query = (i + 1000) > hours ? hours : (i + 1000)
-            singleBammPromises.push(
-              axios.post(pool.config.apiUrl, { query: `{
-                historicalBAMMVestaDatas (first: ${query}, orderBy: id, orderDirection: desc, skip: ${i}){
-                  id
-                  gohmLiquidations
-                  gohmCollateralUSD
-                  gohmUSDTVL
-                }
-              }`
-              })
-            )
+      const promises = this.poolsToFetch.map(async pool => {
+        const singleBammPromises = []
+        for(let i = 0; i < hours; i = i + 1000){
+          let query = hours < 1000 ? hours : 1000
+          if(hours - i < 1000){
+            query = hours - i
           }
-          return Promise.all(singleBammPromises)
-            .then(results => {
-              debugger
-              return results.reduce((a, b) => a.concat(b), [])
+          singleBammPromises.push(
+            axios.post(pool.config.apiUrl, { query: `{
+              historicalBAMMVestaDatas (first: ${query}, orderBy: id, orderDirection: desc, skip: ${i}){
+                id
+                gohmLiquidations
+                gohmCollateralUSD
+                gohmUSDTVL
+                gohmLPTokenValue
+              }
+            }`
             })
+          )
         }
-        return axios.post(pool.config.apiUrl, { query: `{
-          historicalBAMMVestaDatas (first: ${hours}, orderBy: id, orderDirection: desc){
-            id
-            gohmLiquidations
-            gohmCollateralUSD
-            gohmUSDTVL
-            gohmLPTokenValue
-          }
-        }`
-        })
+        const results = await Promise.all(singleBammPromises)
+          return results.reduce((a, b) => {
+              debugger
+              const {data: {historicalBAMMVestaDatas}} = b.data
+              debugger
+              return a.concat(historicalBAMMVestaDatas)
+            }, 
+            [])
       })
-      const unifiedData = {}
-      const dataSets = await Promise.all(promises)
-      debugger
-      dataSets.forEach(ds=> {
-        const {data} = ds.data
-        for(const key in data) {
-          unifiedData[key] = unifiedData[key] || []
-          unifiedData[key] = unifiedData[key].concat(data[key])
-        }
-      })
-      runInAction(()=>{
-        this.tvlData = unifiedData.historicalBAMMVestaDatas
-        .map(o=> {
+      const [tvls] = await Promise.all(promises)
+      const parsedData = tvls.map(o=> {
           o.tvl = parseInt(fromWei(o.gohmUSDTVL).split('.')[0])
           o.imbalance = parseInt(fromWei(o.gohmCollateralUSD).split('.')[0])
           o.liquidations = parseInt(fromWei(o.gohmLiquidations).split('.')[0])
@@ -152,7 +143,8 @@ class MainStore {
           return o
         })
         .reverse()
-
+      runInAction(()=>{
+        this.tvlData = parsedData
       })
     } catch (err) {
       debugger
