@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { observer } from "mobx-react"
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,} from 'recharts'
 import mainStore from '../../stores/main.store';
-import {daysOfTheWeek, monthsOfTheYear} from './constants'
-import CustomTooltip from './MainChartTooltip';
+import {daysOfTheWeek, monthsOfTheYear, colorScheme} from './constants'
+import CustomTooltip from './MainChartTooltip'
+import SideLegend from './SideLegend'
 
 const containerStyles = {height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}
 
@@ -15,37 +16,7 @@ const tickIntervalMap = {
   '1Y': 24 * 30,
 }
 
-const colorScheme = {
-  tvl: 'rgba(19, 194, 101, 1)',
-  imbalance: 'rgba(172, 76, 188, 1)',
-  liquidations: 'rgba(72, 146, 254, 1)',
-  pnl: 'rgba(255, 86, 157, 1)'
-}
-
 const transperancy = (rgbaString, transperancy) => rgbaString.replace('1)', transperancy + ')')
-
-const legendItems = [
-  {
-    label: "backstop TVL",
-    color: colorScheme.tvl, 
-    name: "tvlSwitch"
-  },
-  {
-    label: "Imbalance",
-    color: colorScheme.imbalance,
-    name: 'imbalanceSwitch'
-  },
-  {
-    label: "Liquidations",
-    color: colorScheme.liquidations,
-    name: 'liquidationsSwitch'
-  },
-  {
-    label: "PnL",
-    color: colorScheme.pnl,
-    name: 'pnlSwitch'
-  },
-]
 
 const ChartTitle = styled.div`
   font-style: normal;
@@ -97,61 +68,6 @@ const dateFormatter = (tickItem)=> {
   }          
 
   return date
-}
-
-const LegendTitle = styled.div`
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #676767;
-
-  padding-bottom: 20px;
-`
-
-const LegendText = styled.div`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  color: #000000;
-  width: 50%;
-`
-
-const LegendSwitchContainer = styled.div`
-  [type=checkbox][role=switch]:checked {
-      --background-color: ${({color})=> color};
-      --border-color: ${({color})=> color};
-  }
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-`
-
-const LegendSwitch = observer(({color, label, name}) => {
-  const checked = mainStore[name]
-  return (
-    <LegendSwitchContainer color={color}>
-      <LegendText>
-        {label}
-      </LegendText>
-      <input checked={checked} onChange={()=>mainStore.toggleSwitch(name)} type="checkbox" id="switch" name="switch" role="switch"/>
-    </LegendSwitchContainer>     
-  )
-})
-
-const SideLegend = ()=> {
-  return (
-    <article style={{maxWidth: '220px', padding: '20px', background: 'rgba(33, 91, 143, 0.04)', marginRight: '-40px'}}>
-      <Flex column>
-        <LegendTitle>
-          SELECT PARAMETERS TO DISPLAY
-        </LegendTitle>
-        {legendItems.map(({label, color, name})=> <LegendSwitch key={label} label={label} color={color} name={name}/>)}
-      </Flex>
-    </article>
-  )
 }
 
 const ChartHeader = observer(() => {
