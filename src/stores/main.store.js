@@ -12,15 +12,16 @@ const hoursMap = {
 
 const {fromWei, toBN} = Web3.utils
 
-const poolConfigs = [
-  {
+export const poolConfigs = {
+  "0xebf8252756268091e523e57d293c0522b8afe66b": {
     name: "Vesta",
     network: "Arbitrum",
+    blockExplorer: "https://arbiscan.io",
     coin: "VST",
     collateral: "gOHM",
-    apiUrl: "https://api.thegraph.com/subgraphs/name/yaronvel/b-vesta-gohm",
+    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm",
   }
-]
+}
 
 class PoolStore {
   switchedOn = true
@@ -48,9 +49,12 @@ class MainStore {
   imbalanceSwitch = true
   liquidationsSwitch = true
   pnlSwitch = true
+
+  liquidationsHistoryFiltterAsset = "Assets" 
+  liquidationsHistoryTimeFrame = 24
   constructor() {
     makeAutoObservable(this)
-    this.pools = poolConfigs.map(config => new PoolStore(config))
+    this.pools = Object.values(poolConfigs).map(config => new PoolStore(config))
     this.fetchLiquidations()
     this.fetchTvl()
   }
@@ -68,6 +72,16 @@ class MainStore {
     this.fetchTvl()
   }
 
+  setLiquidationsHistoryFiltterAsset = ({target}) => {
+    debugger
+    this.liquidationsHistoryFiltterAsset = target.value
+  }
+
+  setLiquidationsHistoryTimeFrame = ({target}) => {
+    debugger
+    this.liquidationsHistoryTimeFrame = target.value
+  }
+
   fetchLiquidations = async () => {
     try{
       const promises = this.poolsToFetch.map(pool => {
@@ -78,6 +92,7 @@ class MainStore {
               txHash
               blockNumber
               bammId
+              date
             }
           }`
         })
@@ -112,12 +127,12 @@ class MainStore {
           }
           singleBammPromises.push(
             axios.post(pool.config.apiUrl, { query: `{
-              historicalBAMMVestaDatas (first: ${query}, orderBy: id, orderDirection: desc, skip: ${i}){
+              bammHours (first: ${query}, orderBy: id, orderDirection: desc, skip: ${i}){
                 id
-                gohmLiquidations
-                gohmCollateralUSD
-                gohmUSDTVL
-                gohmLPTokenValue
+                liquidations
+                collateralUSD
+                USDTVL
+                LPTokenValue
               }
             }`
             })
@@ -125,17 +140,17 @@ class MainStore {
         }
         const results = await Promise.all(singleBammPromises)
           return results.reduce((a, b) => {
-              const {data: {historicalBAMMVestaDatas}} = b.data
-              return a.concat(historicalBAMMVestaDatas)
+              const {data: {bammHours}} = b.data
+              return a.concat(bammHours)
             }, 
             [])
       })
       const [tvls] = await Promise.all(promises)
       const parsedData = tvls.map(o=> {
-          o.tvl = parseInt(fromWei(o.gohmUSDTVL).split('.')[0])
-          o.imbalance = parseInt(fromWei(o.gohmCollateralUSD).split('.')[0])
-          o.liquidations = parseInt(fromWei(o.gohmLiquidations).split('.')[0])
-          o.pnl = parseInt(fromWei(o.gohmLPTokenValue).split('.')[0]) * 10000
+          o.tvl = parseInt(fromWei(o.USDTVL).split('.')[0])
+          o.imbalance = parseInt(fromWei(o.collateralUSD).split('.')[0])
+          o.liquidations = parseInt(fromWei(o.liquidations).split('.')[0])
+          o.pnl = parseInt(fromWei(o.LPTokenValue).split('.')[0]) * 10000
           o.date = new Date(o.id * 60 * 60 * 1000)
           o.date = o.id * 60 * 60
           return o

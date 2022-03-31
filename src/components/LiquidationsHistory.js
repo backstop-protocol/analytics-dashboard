@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 import { observer } from "mobx-react"
+import Flex, { FlexItem } from 'styled-flex-component';
 import {SectionTitle} from './styleComponents'
 import {DisplayBn} from './Utils'
-import mainStore from '../stores/main.store'
+import mainStore, { poolConfigs } from '../stores/main.store'
 
 const Container = styled.div`
   th {
@@ -53,20 +54,123 @@ const TdText = styled.div`
   white-space: nowrap;
   display: inline-block;
   overflow: hidden;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
-const Liquidation = ({data}) => {
-  const {debtAmount, collateralAmount, txHash, blockNumber, bammId} = data
+const TdLink = styled.a`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 45px;
+  color: #3F4765;
+  height: 45px;
+  padding: 0 30px;
+  border-left: ${({first})=> !first ? "1px solid #ECEFF9" : ""};
+  white-space: nowrap;
+  display: inline-block;
+  overflow: hidden;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+
+const Liquidation = observer(({data}) => {
+  const {debtAmount, collateralAmount, blockNumber, bammId, date, id} = data
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
+  const parsedDate = new Date(date * 1000).toLocaleDateString()
+  const pool = poolConfigs[bammId]
+  const collateralAsset = pool.collateral
+  const debtAsset = pool.coin
+  if(mainStore.liquidationsHistoryFiltterAsset !== 'Assets' && mainStore.liquidationsHistoryFiltterAsset != debtAsset){
+    return null
+  }
+  const url = pool.blockExplorer + '/tx/' + id
   return (
     <tr>
-      <td><TdText first={true}>12:59 2022-01-01</TdText></td>
+      <td><TdText first={true}>{parsedDate}</TdText></td>
       <td><TdText>{bammId}</TdText></td>
-      <td><TdText><DisplayBn bn={collateralAmount}/> ETH</TdText></td>
-      <td><TdText><DisplayBn bn={debtAmount}/> LUSD</TdText></td>
+      <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
+      <td><TdText><DisplayBn bn={debtAmount}/> {debtAsset}</TdText></td>
       <td><TdText>107.33 %</TdText></td>
-      <td><TdText>{txHash}</TdText></td>
+      <td><TdLink href={url} target="_blank">{id}</TdLink></td>
     </tr> 
+  )
+})
+
+const LSText = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #5E6990;
+
+  margin: 0 20px 0 0px;
+  white-space: nowrap;
+`
+
+const Select = styled.select`
+  width: 100px;
+  height: 32px;
+
+  background: #FFFFFF;
+
+  box-shadow: 0px 12px 23px rgba(62, 73, 84, 0.04);
+  border-radius: 48px;
+  margin: 0 20px 0 0px;
+  padding: 0 30px 0 10px !important;
+  background-position: center right 5px!important;
+  font-style: normal;
+
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  color: #5E6991;
+  option{
+    text-align: center;
+  }
+`
+
+const Selector = observer(({options, onChange}) => {
+  return (
+    <Select defaultValue={options[0]} options={options} onChange={onChange}>
+        {options.map(({value, label}, i) => <option key={i} value={value} >{label}</option>)}
+    </Select>
+  )
+})
+
+const timeOptions = [
+  {
+    label: "24 Hours",
+    value: 24
+  },
+  {
+    label: "7 Days",
+    value: 24 * 7
+  },
+  {
+    label: "30 Days",
+    value: 24 * 30
+  },
+  {
+    label: "1 Year",
+    value: 6000
+  },
+]
+
+const assetOptions = [{ label: "Assets", value: "Assets" }].concat(Object.values(poolConfigs).map(({coin})=> ({ label: coin, value: coin})))
+const {setLiquidationsHistoryFiltterAsset, setLiquidationsHistoryTimeFrame} = mainStore
+const LiquidationsSelector = () => {
+  return (
+    <Flex justifyBetween alignCenter>
+      <LSText>See ALL</LSText>
+      <Selector options={assetOptions} onChange={setLiquidationsHistoryFiltterAsset}/>
+      <Selector options={timeOptions} onChange={setLiquidationsHistoryTimeFrame}/>
+    </Flex>
   )
 }
 
@@ -74,7 +178,10 @@ function LiquidationsHistory () {
   const liquidations = mainStore.liquidationsHistory
   return (
     <Container>
-      <SectionTitle aria-busy={!liquidations.length}>Liquidations history</SectionTitle>
+      <Flex justifyBetween alignCenter>
+        <SectionTitle aria-busy={!liquidations.length}>Liquidations history</SectionTitle>
+        <LiquidationsSelector/>
+      </Flex>
       {!!liquidations.length && <table>
         <thead>
           <tr>
@@ -87,7 +194,7 @@ function LiquidationsHistory () {
           </tr>
         </thead>
         <tbody>
-          {liquidations.map(liq=> <Liquidation key={liq.txHash} data={liq}/>)}
+          {liquidations.map(liq=> <Liquidation key={liq.id} data={liq}/>)}
         </tbody>
       </table>
       }

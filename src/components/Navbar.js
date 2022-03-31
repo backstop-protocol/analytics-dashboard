@@ -19,7 +19,7 @@ function Navbar() {
           <a href="#" style={{
             width: "200px",
           }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="" height="" viewBox="0 0 179 33">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 179 33">
               <defs>
                 <path id="u93lwrmmea" d="M0 0.132L17.082 0.132 17.082 19.312 0 19.312z" />
                 <path id="2dfsjrsznc" d="M0.047 0.165L15.307 0.165 15.307 13.328 0.047 13.328z" />
