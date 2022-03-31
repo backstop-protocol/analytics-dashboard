@@ -46,16 +46,15 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) {
     return null
   }
-  debugger
 
   const date = new Date(label * 1000)
   const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   return (
     <TooltipTemplate className="custom-tooltip">
       <CustomTooltipTitle>{dateString}</CustomTooltipTitle>
-      {payload.map(item=>{
+      {payload.map((item, i)=>{
         return (
-          <Flex column>
+          <Flex column key={i}>
             <CustomTooltipSubTitle>
               <Circle color={item.color}/>
               {item.dataKey}
