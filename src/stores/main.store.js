@@ -125,9 +125,7 @@ class MainStore {
         }
         const results = await Promise.all(singleBammPromises)
           return results.reduce((a, b) => {
-              debugger
               const {data: {historicalBAMMVestaDatas}} = b.data
-              debugger
               return a.concat(historicalBAMMVestaDatas)
             }, 
             [])

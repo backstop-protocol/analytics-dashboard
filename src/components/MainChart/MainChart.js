@@ -1,12 +1,10 @@
-import Flex, { FlexItem } from 'styled-flex-component';
+import Flex from 'styled-flex-component';
 import styled from 'styled-components'
 import { observer } from "mobx-react"
-import {DisplayBn} from './Utils'
-import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
-  ReferenceArea, ReferenceLine, ReferenceDot, ResponsiveContainer,
-  LabelList, Label } from 'recharts'
-
-import mainStore from '../stores/main.store';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,} from 'recharts'
+import mainStore from '../../stores/main.store';
+import {daysOfTheWeek, monthsOfTheYear} from './constants'
+import CustomTooltip from './MainChartTooltip';
 
 const containerStyles = {height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}
 
@@ -16,9 +14,6 @@ const tickIntervalMap = {
   '1M': 48,
   '1Y': 24 * 30,
 }
-
-const daysOfTheWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-const monthsOfTheYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const colorScheme = {
   tvl: 'rgba(19, 194, 101, 1)',
@@ -51,63 +46,6 @@ const legendItems = [
     name: 'pnlSwitch'
   },
 ]
-
-const TooltipTemplate = styled.div`
-  padding: 20px;
-  background: rgba(33, 91, 143, 0.04);
-  backdrop-filter: blur(13px);
-  border-radius: 12px;
-`
-
-const StyledLabel = styled.div`
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 21px;
-  color: red;
-  /* color: #3E4954; */
-`
-
-const CustomizedLabel = ({value}) => <StyledLabel>{value}</StyledLabel>
-
-const CustomTooltipTitle = styled.div`
-font-style: normal;
-font-weight: 400;
-font-size: 14px;
-line-height: 21px;
-color: #676767;
-`
-
-const CustomTooltipSubTitle = styled.div`
-font-style: normal;
-font-weight: 400;
-font-size: 14px;
-line-height: 21px;
-color: #979797;
-`
-
-const CustomTooltipValue = styled.div`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  color: #000000;
-`
- 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload || !payload.length) {
-    return null
-  }
-  return (
-    <TooltipTemplate className="custom-tooltip">
-      <CustomTooltipTitle>{label}</CustomTooltipTitle>
-      <Flex column>
-        <CustomTooltipSubTitle>TVL</CustomTooltipSubTitle>
-        <CustomTooltipValue>{payload[0].value}</CustomTooltipValue>
-      </Flex>
-    </TooltipTemplate>
-  );
-}
 
 const ChartTitle = styled.div`
   font-style: normal;
@@ -293,31 +231,33 @@ function MainChart (props) {
           </ResponsiveContainer>
           <ResponsiveContainer width="100%" height={50}>
             <AreaChart baseValue={0} data={data} syncId="anyId">
-            <defs>
-              <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={transperancy(colorScheme.pnl, 0.8)} />
-                <stop offset="95%" stopColor={transperancy(colorScheme.pnl, 0)} />
-              </linearGradient>
-            </defs>
-            <XAxis 
-              dataKey="date" 
-              tick={{fontSize: 11, fill: '#3E4954'}}
-              scale="time"
-              type="number"
-              domain={[data[0].date, data[data.length - 1].date]}
-              tickFormatter={dateFormatter}
-              interval={interval}
-              >
-            </XAxis>
-          <Area
-              hide={!mainStore.pnlSwitch}
-              type="monotone"
-              dataKey="pnl"
-              stroke={colorScheme.pnl}
-              strokeWidth="2"
-              fillOpacity="1"
-              fill="url(#MyGradient4)"
-            />
+              <defs>
+                <linearGradient id="MyGradient4" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={transperancy(colorScheme.pnl, 0.8)} />
+                  <stop offset="95%" stopColor={transperancy(colorScheme.pnl, 0)} />
+                </linearGradient>
+              </defs>
+              <XAxis 
+                dataKey="date" 
+                tick={{fontSize: 11, fill: '#3E4954'}}
+                scale="time"
+                type="number"
+                domain={[data[0].date, data[data.length - 1].date]}
+                tickFormatter={dateFormatter}
+                interval={interval}
+                >
+              </XAxis>
+              <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                  hide={!mainStore.pnlSwitch}
+                  type="monotone"
+                  dataKey="pnl"
+                  stroke={colorScheme.pnl}
+                  strokeWidth="2"
+                  fillOpacity="1"
+                  fill="url(#MyGradient4)"
+                />
           </AreaChart>
           </ResponsiveContainer>
         </div>

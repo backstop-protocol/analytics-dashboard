@@ -1,7 +1,7 @@
 import Flex, { FlexItem } from 'styled-flex-component';
 import styled from 'styled-components'
 import PoolSelector from './PoolSelector';
-import MainChart from './MainChart';
+import MainChart from './MainChart/MainChart';
 
 const Grid = styled.div`
   padding: 20px 0;
