@@ -148,7 +148,7 @@ const SideLegend = ()=> {
         <LegendTitle>
           SELECT PARAMETERS TO DISPLAY
         </LegendTitle>
-        {legendItems.map(({label, color, name})=> <LegendSwitch label={label} color={color} name={name}/>)}
+        {legendItems.map(({label, color, name})=> <LegendSwitch key={label} label={label} color={color} name={name}/>)}
       </Flex>
     </article>
   )
@@ -181,7 +181,7 @@ function MainChart (props) {
       <Flex justifyBetween>
         <div style={{width: '100%'}}>
           <ResponsiveContainer width="100%" height={300}>
-            <AreaChart baseValue={0} data={data} syncId="anyId">
+            <AreaChart baseValue={0} data={data} syncId="anyId" >
               <defs>
                 <linearGradient id="MyGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={transperancy(colorScheme.tvl, 0.8)} />
@@ -196,7 +196,17 @@ function MainChart (props) {
                   <stop offset="95%" stopColor={transperancy(colorScheme.liquidations, 0)} />
                 </linearGradient>          
               </defs>
-
+              <XAxis 
+                hide={true}
+                dataKey="date" 
+                tick={{fontSize: 11, fill: '#3E4954'}}
+                scale="time"
+                type="number"
+                domain={[data[0].date, data[data.length - 1].date]}
+                tickFormatter={dateFormatter}
+                interval={interval}
+                >
+              </XAxis>
               <YAxis hide={true} type="number" domain={['dataMin -10000', 'dataMax + 10000']} />
               <Tooltip content={<CustomTooltip />} />
               <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />

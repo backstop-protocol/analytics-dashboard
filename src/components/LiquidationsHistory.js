@@ -77,15 +77,17 @@ function LiquidationsHistory () {
       <SectionTitle aria-busy={!liquidations.length}>Liquidations history</SectionTitle>
       {!!liquidations.length && <table>
         <thead>
-          <th><MutedText first={true}>DATE</MutedText></th>
-          <th><MutedText>OWNER</MutedText></th>
-          <th><MutedText>COLLATERAL</MutedText></th>
-          <th><MutedText>DEBT</MutedText></th>
-          <th><MutedText>LIQUIDATION</MutedText></th>
-          <th><MutedText>TRANSACTION</MutedText></th>
+          <tr>
+            <th><MutedText first={true}>DATE</MutedText></th>
+            <th><MutedText>OWNER</MutedText></th>
+            <th><MutedText>COLLATERAL</MutedText></th>
+            <th><MutedText>DEBT</MutedText></th>
+            <th><MutedText>LIQUIDATION</MutedText></th>
+            <th><MutedText>TRANSACTION</MutedText></th>
+          </tr>
         </thead>
         <tbody>
-          {liquidations.map(liq=> <Liquidation data={liq}/>)}
+          {liquidations.map(liq=> <Liquidation key={liq.txHash} data={liq}/>)}
         </tbody>
       </table>
       }

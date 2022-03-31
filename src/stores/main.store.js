@@ -145,7 +145,6 @@ class MainStore {
         this.tvlData = parsedData
       })
     } catch (err) {
-      debugger
       console.error(err)
     }
   }
