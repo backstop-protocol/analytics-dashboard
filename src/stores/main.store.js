@@ -52,6 +52,9 @@ class MainStore {
 
   liquidationsHistoryFiltterAsset = "Assets" 
   liquidationsHistoryTimeFrame = 24
+
+  loadingLiquidations = true
+  loadingTvl = true
   constructor() {
     makeAutoObservable(this)
     this.pools = Object.values(poolConfigs).map(config => new PoolStore(config))
@@ -80,37 +83,50 @@ class MainStore {
   setLiquidationsHistoryTimeFrame = ({target}) => {
     debugger
     this.liquidationsHistoryTimeFrame = target.value
+    this.fetchLiquidations()
   }
 
   fetchLiquidations = async () => {
     try{
-      const promises = this.poolsToFetch.map(pool => {
-        return axios.post(pool.config.apiUrl, { query: `{ liquidationEvents (orderBy: blockNumber, orderDirection: desc, first: 10){
-              id
-              debtAmount
-              collateralAmount
-              txHash
-              blockNumber
-              bammId
-              date
-            }
-          }`
-        })
-      })
-      const unifiedData = {}
-      const dataSets = await Promise.all(promises)
-      dataSets.forEach(ds=> {
-        const {data} = ds.data
-        for(const key in data) {
-          unifiedData[key] = unifiedData[key] || []
-          unifiedData[key] = unifiedData[key].concat(data[key])
+      this.loadingLiquidations = true
+      const promises = this.poolsToFetch.map(async pool => {
+        const hours = this.liquidationsHistoryTimeFrame
+        const singlePoolPromises = []
+        for (let i = 0; i < hours;  i = i + 1000){
+          let query = hours < 1000 ? hours : 1000
+          if(hours - i < 1000){
+            query = hours - i
+          }
+          const promise = axios.post(pool.config.apiUrl, { query: `{ liquidationEvents (orderBy: blockNumber, orderDirection: desc, first: ${query}, skip: ${i}){
+                id
+                debtAmount
+                collateralAmount
+                txHash
+                blockNumber
+                bammId
+                date
+              }
+            }`
+          })
+          singlePoolPromises.push(promise)
         }
+        const results = await Promise.all(singlePoolPromises)
+        return results.reduce((a, b) => {
+          const {data: {liquidationEvents}} = b.data
+          return a.concat(liquidationEvents)
+        }, 
+        [])
+
       })
+      const [liquidationEvents] = await Promise.all(promises)
+      
       runInAction(()=>{
-        this.liquidationsHistory = unifiedData.liquidationEvents
+        this.liquidationsHistory = liquidationEvents
       })
     } catch (err) {
       console.error(err)
+    } finally {
+      runInAction(()=> this.loadingLiquidations = false)
     }
   }
 

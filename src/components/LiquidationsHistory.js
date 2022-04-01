@@ -91,7 +91,7 @@ const Liquidation = observer(({data}) => {
   }
   const url = pool.blockExplorer + '/tx/' + id
   return (
-    <tr>
+    <tr class="fade-in-top">
       <td><TdText first={true}>{parsedDate}</TdText></td>
       <td><TdText>{bammId}</TdText></td>
       <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
@@ -145,19 +145,19 @@ const Selector = observer(({options, onChange}) => {
 
 const timeOptions = [
   {
-    label: "24 Hours",
-    value: 24
+    label: "Last 10",
+    value: 10
   },
   {
-    label: "7 Days",
-    value: 24 * 7
+    label: "Last 100",
+    value: 100
   },
   {
-    label: "30 Days",
-    value: 24 * 30
+    label: "Last 300",
+    value: 1000
   },
   {
-    label: "1 Year",
+    label: "max",
     value: 6000
   },
 ]
@@ -179,7 +179,7 @@ function LiquidationsHistory () {
   return (
     <Container>
       <Flex justifyBetween alignCenter>
-        <SectionTitle aria-busy={!liquidations.length}>Liquidations history</SectionTitle>
+        <SectionTitle aria-busy={mainStore.loadingLiquidations}>Liquidations history</SectionTitle>
         <LiquidationsSelector/>
       </Flex>
       {!!liquidations.length && <table>
