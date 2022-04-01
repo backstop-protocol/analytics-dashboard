@@ -132,6 +132,7 @@ class MainStore {
 
   fetchTvl = async () => {
     try{
+      this.loadingTvl = true
       // TODO: store months and fetch months instead 
       const hours = hoursMap[this.tvlChartScope]
       const promises = this.poolsToFetch.map(async pool => {
@@ -177,6 +178,8 @@ class MainStore {
       })
     } catch (err) {
       console.error(err)
+    } finally {
+      this.loadingTvl = false
     }
   }
 

@@ -18,7 +18,7 @@ const tickIntervalMap = {
 
 const transperancy = (rgbaString, transperancy) => rgbaString.replace('1)', transperancy + ')')
 
-const ChartTitle = styled.div`
+const ChartTitle = styled.span`
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
@@ -76,7 +76,7 @@ const ChartHeader = observer(() => {
   return (
     <ChartHeaderContainer>
       <Flex justifyBetween>
-        <ChartTitle>Total Value Locked</ChartTitle>
+        <ChartTitle aria-busy={mainStore.loadingTvl}>Total Value Locked</ChartTitle>
         <Flex justifyAround style={{minWidth: '40%'}}>
           {timeOptions.map(t=> <ChartHeaderButton val={t} scope={scope} onClick={() => setTvlChartScope(t)}/>)}
         </Flex>
