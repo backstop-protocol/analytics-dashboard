@@ -31,12 +31,6 @@ function MainGrid () {
       <div className="div2">
         <MainChart />
       </div>
-      {/* <div className="div3">
-        <article></article>
-      </div>
-      <div className="div4">
-        <article></article>
-      </div> */}
     </Grid>
   )
 }

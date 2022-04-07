@@ -1,6 +1,7 @@
 import Flex, { FlexItem } from 'styled-flex-component';
 import styled from 'styled-components'
 import { observer } from "mobx-react"
+import mainStore from '../../stores/main.store';
 
 const CustomTooltipTitle = styled.div`
 font-style: normal;
@@ -67,6 +68,38 @@ const CustomTooltip = ({ active, payload, label }) => {
       })}
     </TooltipTemplate>
   );
-}
+} 
+export const PnlTooltip = observer(({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) {
+    return null
+  }
+  const {currentPool} = mainStore
+  const date = new Date(label * 1000)
+  const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  return (
+    <TooltipTemplate className="custom-tooltip">
+      <CustomTooltipTitle>{dateString}</CustomTooltipTitle>
+      {payload.map((item, i)=>{
+        return (
+          <Flex column key={i}>
+            <CustomTooltipSubTitle>
+              <Circle color={item.color}/>
+              {item.dataKey}
+            </CustomTooltipSubTitle>
+            <CustomTooltipValue>
+              {item.value}
+            </CustomTooltipValue>          
+            <CustomTooltipSubTitle>
+              normlized PnL
+            </CustomTooltipSubTitle>
+            <CustomTooltipValue>
+              {currentPool.getNormlizedPnl(item.value)} %
+            </CustomTooltipValue>
+          </Flex>
+        )
+      })}
+    </TooltipTemplate>
+  );
+})
 
 export default observer(CustomTooltip)

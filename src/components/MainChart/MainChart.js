@@ -4,7 +4,7 @@ import { observer } from "mobx-react"
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,} from 'recharts'
 import mainStore from '../../stores/main.store';
 import {daysOfTheWeek, monthsOfTheYear, colorScheme} from './constants'
-import CustomTooltip from './MainChartTooltip'
+import CustomTooltip, {PnlTooltip} from './MainChartTooltip'
 import SideLegend from './SideLegend'
 
 const containerStyles = {height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}
@@ -13,7 +13,7 @@ const tickIntervalMap = {
   '24H': 1,
   '7D': 24,
   '1M': 48,
-  '1Y': 24 * 30,
+  'MAX': 24 * 30,
 }
 
 const transperancy = (rgbaString, transperancy) => rgbaString.replace('1)', transperancy + ')')
@@ -63,7 +63,7 @@ const dateFormatter = (tickItem)=> {
   if(tvlChartScope === '1M' ){
     date = date.getDate() + '/' + date.getMonth()
   }                   
-  if(tvlChartScope === '1Y'){
+  if(tvlChartScope === 'MAX'){
     date = monthsOfTheYear[date.getMonth()]
   }          
 
@@ -72,13 +72,13 @@ const dateFormatter = (tickItem)=> {
 
 const ChartHeader = observer(() => {
   const {tvlChartScope: scope, setTvlChartScope} = mainStore
-  const timeOptions = ['24H', '7D', '1M', '1Y']
+  const timeOptions = ['24H', '7D', '1M', 'MAX']
   return (
     <ChartHeaderContainer>
       <Flex justifyBetween>
         <ChartTitle aria-busy={mainStore.loadingTvl}>Total Value Locked</ChartTitle>
         <Flex justifyAround style={{minWidth: '40%'}}>
-          {timeOptions.map(t=> <ChartHeaderButton val={t} scope={scope} onClick={() => setTvlChartScope(t)}/>)}
+          {timeOptions.map((t, index) => <ChartHeaderButton key={index} val={t} scope={scope} onClick={() => setTvlChartScope(t)}/>)}
         </Flex>
       </Flex>
     </ChartHeaderContainer>

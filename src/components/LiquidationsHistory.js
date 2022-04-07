@@ -3,7 +3,8 @@ import { observer } from "mobx-react"
 import Flex, { FlexItem } from 'styled-flex-component';
 import {SectionTitle} from './styleComponents'
 import {DisplayBn} from './Utils'
-import mainStore, { poolConfigs } from '../stores/main.store'
+import mainStore from '../stores/main.store'
+import { poolConfigs } from '../stores/pool.config';
 
 const Container = styled.div`
   th {
@@ -78,7 +79,6 @@ const TdLink = styled.a`
   text-overflow: ellipsis;
 `
 
-
 const Liquidation = observer(({data}) => {
   const {debtAmount, collateralAmount, blockNumber, bammId, date, id} = data
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
@@ -91,7 +91,7 @@ const Liquidation = observer(({data}) => {
   }
   const url = pool.blockExplorer + '/tx/' + id
   return (
-    <tr class="fade-in-top">
+    <tr className="fade-in-top">
       <td><TdText first={true}>{parsedDate}</TdText></td>
       <td><TdText>{bammId}</TdText></td>
       <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
@@ -198,6 +198,7 @@ function LiquidationsHistory () {
         </tbody>
       </table>
       }
+      {!liquidations.length && <SectionTitle className="fade-in-top" style={{textAlign: 'center', padding: '50px'}}>No Liquidations Yet</SectionTitle>}
     </Container>
   )
 }

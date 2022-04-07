@@ -50,9 +50,9 @@ const UpArrow = ()=> <svg width="7" height="6" viewBox="0 0 7 6" fill="none" xml
 const DownArrow = ()=> <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M6.24107 7.16555C6.29918 7.13986 6.35367 7.10196 6.40111 7.05185L6.40535 7.04732C6.49459 6.9508 6.54968 6.81815 6.54968 6.67175L6.54968 1.32824C6.54968 1.03312 6.32583 0.793884 6.04968 0.793884C5.77354 0.793884 5.54968 1.03312 5.54968 1.32824L5.54968 5.38171L1.40324 0.950392C1.20797 0.741715 0.891391 0.741715 0.696129 0.950392C0.500867 1.15907 0.500867 1.4974 0.696129 1.70608L4.84258 6.1374L1.04968 6.1374C0.77354 6.1374 0.549683 6.37663 0.549683 6.67175C0.549683 6.96686 0.77354 7.2061 1.04968 7.2061L6.04934 7.2061L6.05268 7.20609C6.11681 7.20568 6.18088 7.19217 6.24107 7.16555Z" fill="#FF0000" fill-opacity="0.9"/> </svg>
 
 function SidebarPoolItem ({poolStore}) {
-  const down = false
+  const down = poolStore.pnl < 0
   return (
-    <Flex justifyBetween alignCenter style={{margin: "34px 0"}} >
+    <Flex justifyBetween alignCenter style={{marginBottom: "20px", marginLeft: "10px"}} >
       <IconWrapper>
         <img src={poolStore.icon} />
       </IconWrapper>
@@ -61,17 +61,18 @@ function SidebarPoolItem ({poolStore}) {
           {poolStore.config.name}
         </PlatformTitleStyle>        
         <PlatformSubTitle>
-        {poolStore.config.coin} / {poolStore.config.network}
+        {poolStore.config.coin} / {poolStore.config.collateral}
         </PlatformSubTitle>
       </Flex>
       <Flex column>
-        <Apr>{poolStore.apr}% APR</Apr>
-        <UpOnly down={down}>
+        {/* <Apr>{poolStore.apr}% APR</Apr> */}
+        <Apr>Profit And Loss</Apr>
+        {!!poolStore.pnl && <UpOnly down={down}>
           <span>
             {down && <DownArrow/>}
             {!down && <UpArrow/>}
-          </span> {poolStore.aprChange}%
-        </UpOnly>
+          </span> {poolStore.pnl}%
+        </UpOnly>}
       </Flex>
       <div>
         <input checked={poolStore.switchedOn} onChange={poolStore.toggle} type="checkbox" id="switch" name="switch" role="switch"/>
