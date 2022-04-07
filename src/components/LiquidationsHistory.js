@@ -84,6 +84,10 @@ const Liquidation = observer(({data}) => {
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
   const parsedDate = new Date(date * 1000).toLocaleDateString()
   const pool = poolConfigs[bammId]
+  if(!pool){
+    console.error(new Error(`failed to find pool: "${bammId}"`))
+    return null
+  }
   const collateralAsset = pool.collateral
   const debtAsset = pool.coin
   if(mainStore.liquidationsHistoryFiltterAsset !== 'Assets' && mainStore.liquidationsHistoryFiltterAsset != debtAsset){

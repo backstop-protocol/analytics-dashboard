@@ -31,16 +31,17 @@ export const poolConfigs = {
     apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth",
     pnlBaseLine: "6"
   },
-  "0x04208f296039f482810B550ae0d68c3E1A5EB719": {
-    name: "Hundred",
-    icon: "Hundred",
-    network: "Arbitrum",
-    blockExplorer: "https://arbiscan.io",
-    coin: "multiple",
-    collateral: "aETH",
-    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-arbitrum",
-    pnlBaseLine: "1"
-  },
+  // // not working the-graph issue
+  // "0x04208f296039f482810B550ae0d68c3E1A5EB719": {
+  //   name: "Hundred",
+  //   icon: "Hundred",
+  //   network: "Arbitrum",
+  //   blockExplorer: "https://arbiscan.io",
+  //   coin: "multiple",
+  //   collateral: "USDC",
+  //   apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-arbitrum",
+  //   pnlBaseLine: "1"
+  // },
   "0x00FF66AB8699AAfa050EE5EF5041D1503aa0849a": {
     name: "Liquity",
     icon: "Liquity",
@@ -59,6 +60,26 @@ export const poolConfigs = {
     coin: "LUSD",
     collateral: "ETH",
     apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy",
+    pnlBaseLine: "1"
+  },  
+  "0x6d62d6Af9b82CDfA3A7d16601DDbCF8970634d22": {
+    name: "Hundred",
+    icon: "Hundred",
+    network: "Fantom",
+    blockExplorer: "https://ftmscan.com/",
+    coin: "multiple",
+    collateral: "DAI",
+    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom",
+    pnlBaseLine: "1"
+  },
+  "0xEDC7905a491fF335685e2F2F1552541705138A3D": {
+    name: "Hundred",
+    icon: "Hundred",
+    network: "Fantom",
+    blockExplorer: "https://ftmscan.com/",
+    coin: "multiple",
+    collateral: "USDC",
+    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom",
     pnlBaseLine: "1"
   },
 }

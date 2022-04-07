@@ -61,7 +61,7 @@ function SidebarPoolItem ({poolStore}) {
           {poolStore.config.name}
         </PlatformTitleStyle>        
         <PlatformSubTitle>
-        {poolStore.config.coin} / {poolStore.config.collateral}
+          {poolStore.config.collateral} / {poolStore.config.coin}
         </PlatformSubTitle>
       </Flex>
       <Flex column>

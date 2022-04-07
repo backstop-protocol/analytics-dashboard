@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { observer } from "mobx-react"
 import SidebarPoolItem from './SidebarPoolItem'
 import mainStore from '../stores/main.store'
+import {Fragment} from 'react'
 
 
 const MutedTitle = styled.div`
@@ -30,7 +31,7 @@ function PoolSelector () {
     Ethereum: [],
     Arbitrum: [],
     Fantom: [],
-    Polygon: [],
+    // Polygon: [],
   }
   mainStore.pools.forEach(pool=> {
     networks[pool.config.network].push(pool)
@@ -41,10 +42,10 @@ function PoolSelector () {
       <Flex column>
         <MutedTitle>SELECT POOLS</MutedTitle>
         {Object.entries(networks).map(([net, pools]) => {
-          return <>
+          return (<Fragment key={net}>
             <MutedSubtitle>{net}</MutedSubtitle>
             {pools.map((pool, index) => <SidebarPoolItem key={index} poolStore={pool}/>)}
-          </>
+          </Fragment>)
         })}
       </Flex>
     </div>
