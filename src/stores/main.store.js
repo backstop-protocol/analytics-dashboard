@@ -13,6 +13,29 @@ const hoursMap = {
 
 const {fromWei, toBN} = Web3.utils
 
+const fillMissingHours = arr => {
+  const filledArr = []
+  for (let i = 0; i < arr.length; i++) {
+    const thisHour = arr[i]
+    filledArr.push(thisHour)
+    const nextHour = arr[i + 1]
+    if(!nextHour) {
+      continue
+    }
+    if(parseInt(thisHour.id) + 1 == nextHour.id){ 
+      continue // nothing todo
+    }
+    // fill missing hours
+    for (let i = (parseInt(thisHour.id) + 1); i < nextHour.id; i++) {
+      const filledNextHour = Object.assign({}, thisHour)
+      filledNextHour.id = i
+      filledArr.push(filledNextHour)
+    }
+  }
+  debugger
+  return filledArr
+}
+
 const addHours = (hourArrays) => {
   const hoursObj = {}
   hourArrays.forEach(hours => {
@@ -78,7 +101,6 @@ class PoolStore {
       }`})
       let {bammHours: [lastHour]} = data.data
       lastHour = lastHour || {}
-      debugger
       const pnl = parseFloat(fromWei(lastHour.LPTokenValue)) || 0
       runInAction(()=>{
         this.pnl = this.getNormlizedPnl(pnl)
@@ -221,7 +243,8 @@ class MainStore {
           )
         }
         const results = await Promise.all(singleBammPromises)
-          return results.reduce((a, b) => {
+        const cleanHours = results
+            .reduce((a, b) => {
               const {data: {bammHours}} = b.data
               return a.concat(bammHours)
             }, 
@@ -230,6 +253,10 @@ class MainStore {
               o.pnlBaseLine = pool.config.pnlBaseLine
               return o
             })
+            .reverse()
+
+          debugger
+          return fillMissingHours(cleanHours)
       })
       const tvls = addHours(await Promise.all(promises))
       const parsedData = tvls.map(o=> {
@@ -240,7 +267,7 @@ class MainStore {
           o.date = o.id * 60 * 60
           return o
         })
-        .reverse()
+
       runInAction(()=>{
         this.tvlData = parsedData
       })
