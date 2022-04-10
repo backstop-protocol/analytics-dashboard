@@ -13,6 +13,7 @@ font-size: 16px;
 line-height: 24px;
 
 color: #8F98B7;
+padding-bottom: 20px;
 `
 
 const MutedSubtitle = styled.div`
@@ -23,15 +24,15 @@ line-height: 24px;
 
 color: #8F98B7;
 
-padding-top: 20px;
+display: inline-block;
 `
 
 function PoolSelector () {
   const networks = {
     Ethereum: [],
-    Arbitrum: [],
     Fantom: [],
-    // Polygon: [],
+    Arbitrum: [],
+    Polygon: [],
   }
   mainStore.pools.forEach(pool=> {
     networks[pool.config.network].push(pool)
@@ -43,9 +44,13 @@ function PoolSelector () {
         <MutedTitle>SELECT POOLS</MutedTitle>
         {Object.entries(networks).map(([net, pools]) => {
           return (<Fragment key={net}>
-            <MutedSubtitle>{net}</MutedSubtitle>
-            {pools.map((pool, index) => <SidebarPoolItem key={index} poolStore={pool}/>)}
-          </Fragment>)
+            <details>
+              <summary>
+                <MutedSubtitle>{net}</MutedSubtitle>
+              </summary>
+              {pools.map((pool, index) => <SidebarPoolItem key={index} poolStore={pool}/>)}
+              </details>
+            </Fragment>)
         })}
       </Flex>
     </div>

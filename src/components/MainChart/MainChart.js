@@ -87,10 +87,12 @@ const ChartHeader = observer(() => {
 
 function MainChart (props) {
   const data = mainStore.tvlData
+  debugger
   const interval = tickIntervalMap[mainStore.tvlChartScope]
   if(!data.length){
     return <article style={containerStyles} aria-busy="true"></article>
   }
+  const hideImbalance = !mainStore.imbalanceSwitch || mainStore.currentPool.config.noImbalance
   return (
     <article>
       <ChartHeader/>
@@ -136,7 +138,7 @@ function MainChart (props) {
                 fill="url(#MyGradient)"
               />        
               <Area
-                hide={!mainStore.imbalanceSwitch}
+                hide={hideImbalance}
                 type="monotone"
                 dataKey="imbalance"
                 stroke={colorScheme.imbalance}

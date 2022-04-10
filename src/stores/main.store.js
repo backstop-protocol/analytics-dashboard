@@ -28,11 +28,10 @@ const fillMissingHours = arr => {
     // fill missing hours
     for (let i = (parseInt(thisHour.id) + 1); i < nextHour.id; i++) {
       const filledNextHour = Object.assign({}, thisHour)
-      filledNextHour.id = i
+      filledNextHour.id = i.toString()
       filledArr.push(filledNextHour)
     }
   }
-  debugger
   return filledArr
 }
 
@@ -86,13 +85,16 @@ class PoolStore {
   getNormlizedPnl = (rawPnl) => {
     const pnlBaseLine = this.config.pnlBaseLine
     if (rawPnl < pnlBaseLine){
-      return 0
+      return '0.0'
     }
     
     return ((( rawPnl / pnlBaseLine) - 1 ) * 100).toFixed(1)
   }
 
   fetchLastPnl = async () => {
+    if(this.config.comingSoon){
+      return
+    }
     try{
       const {data} = await axios.post(this.config.apiUrl, { query: `{
         bammHours (first: 1, orderBy: id, orderDirection: desc){
@@ -250,16 +252,24 @@ class MainStore {
             }, 
             [])
             .map(o => {
+              o.decimal = pool.config.decimal
               o.pnlBaseLine = pool.config.pnlBaseLine
               return o
             })
             .reverse()
 
-          debugger
-          return fillMissingHours(cleanHours)
+          console.log("cleanHours.length", cleanHours.length )
+          const filledHours = fillMissingHours(cleanHours)
+          console.log("filledHours.length", filledHours.length)
+          return filledHours.slice(-(hoursMap[this.tvlChartScope]))
       })
       const tvls = addHours(await Promise.all(promises))
       const parsedData = tvls.map(o=> {
+          if(o.decimal){
+            const decimalFix = toBN('10').pow(toBN((18 - o.decimal).toString()))
+            o.USDTVL = toBN(o.USDTVL).mul(decimalFix).toString()
+            o.liquidations = toBN(o.liquidations).mul(decimalFix).toString()
+          }
           o.tvl = parseInt(fromWei(o.USDTVL).split('.')[0])
           o.imbalance = parseInt(fromWei(o.collateralUSD).split('.')[0])
           o.liquidations = parseInt(fromWei(o.liquidations).split('.')[0])
@@ -267,14 +277,16 @@ class MainStore {
           o.date = o.id * 60 * 60
           return o
         })
-
+      console.log(parsedData)
       runInAction(()=>{
         this.tvlData = parsedData
       })
     } catch (err) {
       console.error(err)
     } finally {
-      this.loadingTvl = false
+      runInAction(()=>{
+        this.loadingTvl = false
+      })
     }
   }
 

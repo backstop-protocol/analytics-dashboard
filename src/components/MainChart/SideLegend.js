@@ -36,6 +36,10 @@ const LegendSwitchContainer = styled.div`
 
 const LegendSwitch = observer(({color, label, name}) => {
   const checked = mainStore[name]
+  const hideImbalance = mainStore.currentPool.config.noImbalance
+  if (label == "Imbalance" && hideImbalance) {
+    return null
+  }
   return (
     <LegendSwitchContainer color={color}>
       <LegendText>
@@ -63,7 +67,7 @@ const legendItems = [
     name: 'imbalanceSwitch'
   },
   {
-    label: "PnL",
+    label: "Backstop LP Token Value",
     color: colorScheme.pnl,
     name: 'pnlSwitch'
   },

@@ -52,7 +52,7 @@ const DownArrow = ()=> <svg width="7" height="8" viewBox="0 0 7 8" fill="none" x
 function SidebarPoolItem ({poolStore}) {
   const down = poolStore.pnl < 0
   return (
-    <Flex justifyBetween alignCenter style={{marginBottom: "20px", marginLeft: "10px"}} >
+    <Flex  justifyBetween alignCenter style={{marginBottom: "20px", marginLeft: "10px"}} >
       <IconWrapper>
         <img src={poolStore.icon} />
       </IconWrapper>
@@ -66,16 +66,21 @@ function SidebarPoolItem ({poolStore}) {
       </Flex>
       <Flex column>
         {/* <Apr>{poolStore.apr}% APR</Apr> */}
-        <Apr>Profit And Loss</Apr>
-        {!!poolStore.pnl && <UpOnly down={down}>
+        <Apr>PnL</Apr>
+        {poolStore.pnl && <UpOnly down={down}>
           <span>
             {down && <DownArrow/>}
             {!down && <UpArrow/>}
           </span> {poolStore.pnl}%
         </UpOnly>}
       </Flex>
-      <div>
-        <input checked={poolStore.switchedOn} onChange={poolStore.toggle} type="checkbox" id="switch" name="switch" role="switch"/>
+      <div data-tooltip={poolStore.config.comingSoon ? "coming soon" : null}>
+        <input 
+          disabled={poolStore.config.comingSoon}
+          checked={poolStore.switchedOn} 
+          onChange={poolStore.toggle} 
+          type="checkbox" 
+          id="switch" name="switch" role="switch"/>
       </div>
     </Flex>
   )
