@@ -78,7 +78,7 @@ export const poolConfigs = {
     apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity",
     pnlBaseLine: "3.11"
   },  
-  "0x6d62d6Af9b82CDfA3A7d16601DDbCF8970634d22": {
+  "0x6d62d6af9b82cdfa3a7d16601ddbcf8970634d22": {
     name: "Hundred",
     icon: "Hundred",
     network: "Fantom",
@@ -89,7 +89,7 @@ export const poolConfigs = {
     pnlBaseLine: "17.79",
     noImbalance: true
   },
-  "0xEDC7905a491fF335685e2F2F1552541705138A3D": {
+  "0xedc7905a491ff335685e2f2f1552541705138a3d": {
     name: "Hundred",
     icon: "Hundred",
     network: "Fantom",

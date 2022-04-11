@@ -175,7 +175,7 @@ class MainStore {
       const poolsToFetch = this.pools.filter(p=> !p.config.comingSoon)
       this.loadingLiquidations = true
       const promises = poolsToFetch.map(async pool => {
-        const hours = this.liquidationsHistoryTimeFrame < 100 ? 100 : this.liquidationsHistoryTimeFrame
+        const hours = this.liquidationsHistoryTimeFrame < 1000 ? 1000 : this.liquidationsHistoryTimeFrame
         const singlePoolPromises = []
         for (let i = 0; i < hours;  i = i + 1000){
           let query = hours < 1000 ? hours : 1000
@@ -201,11 +201,10 @@ class MainStore {
         }, 
         [])
         return unifiedResults.filter(r => {
-          return r.collateralAmount !== '0'
+          return r.debtAmount !== '0'
         })
       })
       const liquidations = (await Promise.all(promises)).reduce((a, b) => {
-        debugger  
         return a.concat(b)
       }, [])
 

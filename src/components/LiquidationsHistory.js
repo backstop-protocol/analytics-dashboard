@@ -94,6 +94,7 @@ const Liquidation = observer(({data}) => {
   if(mainStore.liquidationsHistoryFiltterAsset !== 'Assets' && mainStore.liquidationsHistoryFiltterAsset != collateralAsset){
     return null
   }
+  const multipleCollateral = collateralAsset === 'multiple'
   const url = pool.blockExplorer + '/tx/' + id
   return (
     <tr className="fade-in-top">
@@ -101,7 +102,12 @@ const Liquidation = observer(({data}) => {
       <td><TdText>{pool.network}</TdText></td>
       <td><TdText>{pool.name}</TdText></td>
       <td><TdText>{bammId}</TdText></td>
-      <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
+      {!multipleCollateral &&
+        <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
+      }      
+      {multipleCollateral &&
+        <td><TdText> Multiple Collateral Types</TdText></td>
+      }
       <td><TdText><DisplayBn bn={debtAmount}/> {debtAsset}</TdText></td>
 
       <td><TdLink href={url} target="_blank">{id}</TdLink></td>
@@ -200,14 +206,14 @@ function LiquidationsHistory () {
             <th><MutedText first={true}>DATE</MutedText></th>
             <th><MutedText>NETWORK</MutedText></th>
             <th><MutedText>PLATFORM</MutedText></th>
-            <th><MutedText>OWNER</MutedText></th>
+            <th><MutedText>BAMM ADDRESS </MutedText></th>
             <th><MutedText>COLLATERAL</MutedText></th>
             <th><MutedText>DEBT</MutedText></th>
             <th><MutedText>TRANSACTION</MutedText></th>
           </tr>
         </thead>
         <tbody>
-          {liquidations.map(liq=> <Liquidation key={liq.id} data={liq}/>)}
+          {liquidations.map((liq, i)=> <Liquidation key={i} data={liq}/>)}
         </tbody>
       </table>
       }
