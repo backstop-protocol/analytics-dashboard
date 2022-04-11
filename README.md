@@ -1,18 +1,17 @@
 #  B.Protocol Analytics Dashboard
 uses:
-- react app
-- recharts charting library
-- the Graph hosted blockchain indexer
+- [react app](https://reactjs.org/docs/create-a-new-react-app.html)
+- [recharts charting library](https://recharts.org/en-US/)
+- [the Graph hosted blockchain indexer](https://thegraph.com/en/)
 
 # the Graph API endpoints (graphQL)
- 
-0: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy"
-1: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm"
-2: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc"
-3: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth"
-4: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity"
-5: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom"
-6: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom"
+- [bprotocol-liquity-legacy](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy)
+- [bprotocol-vesta-gohm](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm)
+- [bprotocol-vesta-renbtc](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc)
+- [bprotocol-vesta-eth](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth)
+- [bprotocol-liquity](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity)
+- [bprotocol-hundred-dai-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom)
+- [bprotocol-hundred-usdc-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom)
 
 # Getting Started with Create React App
 
