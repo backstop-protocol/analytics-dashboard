@@ -5,12 +5,11 @@ uses:
 - [the Graph hosted blockchain indexer](https://thegraph.com/en/)
 
 # the Graph API endpoints (graphQL)
- 
 - [bprotocol-liquity-legacy](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy)
 - [bprotocol-vesta-gohm](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm)
 - [bprotocol-vesta-renbtc](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc)
 - [bprotocol-vesta-eth](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth)
-- [bprotocol-liquity](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity)"
+- [bprotocol-liquity](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity)
 - [bprotocol-hundred-dai-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom)
 - [bprotocol-hundred-usdc-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom)
 
