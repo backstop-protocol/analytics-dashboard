@@ -95,7 +95,8 @@ const Liquidation = observer(({data}) => {
     return null
   }
   const multipleCollateral = collateralAsset === 'multiple'
-  const url = pool.blockExplorer + '/tx/' + id
+  const [txHash,] = id.split(';')
+  const url = pool.blockExplorer + 'tx/' + txHash
   return (
     <tr className="fade-in-top">
       <td><TdText first={true}>{parsedDate}</TdText></td>
