@@ -42,9 +42,9 @@ function PoolSelector () {
     <div>
       <Flex column>
         <MutedTitle>SELECT POOLS</MutedTitle>
-        {Object.entries(networks).map(([net, pools]) => {
+        {Object.entries(networks).map(([net, pools], i) => {
           return (<Fragment key={net}>
-            <details>
+            <details open={i==0}>
               <summary>
                 <MutedSubtitle>{net}</MutedSubtitle>
               </summary>

@@ -52,7 +52,7 @@ const LegendSwitch = observer(({color, label, name}) => {
 
 const legendItems = [
   {
-    label: "backstop TVL",
+    label: "Backstop TVL",
     color: colorScheme.tvl, 
     name: "tvlSwitch"
   },

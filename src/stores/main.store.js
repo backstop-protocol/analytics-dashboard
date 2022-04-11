@@ -120,7 +120,7 @@ class MainStore {
   liquidationsHistory = []
   tvlData = []
   tvlImbalanceData = []
-  tvlChartScope = '24H'
+  tvlChartScope = 'MAX'
   tvlSwitch = true
   imbalanceSwitch = true
   liquidationsSwitch = true
@@ -172,11 +172,9 @@ class MainStore {
 
   fetchLiquidations = async () => {
     try{
-      if(!this.poolsToFetch.length){
-        return
-      }
+      const poolsToFetch = this.pools.filter(p=> !p.config.comingSoon)
       this.loadingLiquidations = true
-      const promises = this.poolsToFetch.map(async pool => {
+      const promises = poolsToFetch.map(async pool => {
         const hours = this.liquidationsHistoryTimeFrame
         const singlePoolPromises = []
         for (let i = 0; i < hours;  i = i + 1000){
@@ -197,17 +195,24 @@ class MainStore {
           singlePoolPromises.push(promise)
         }
         const results = await Promise.all(singlePoolPromises)
-        return results.reduce((a, b) => {
+        const unifiedResults = results.reduce((a, b) => {
           const {data: {liquidationEvents}} = b.data
           return a.concat(liquidationEvents)
         }, 
         [])
-
+        return unifiedResults.filter(r => {
+          return r.collateralAmount !== '0'
+        })
       })
-      const liquidations = (await Promise.all(promises)).reduce((a, b) => a.concat(b), [])
+      const liquidations = (await Promise.all(promises)).reduce((a, b) => {
+        debugger  
+        return a.concat(b)
+      }, [])
 
       runInAction(()=>{
         this.liquidationsHistory = liquidations
+          .sort((a, b)=>  b.date - a.date)
+          .slice(0, this.liquidationsHistoryTimeFrame)
       })
     } catch (err) {
       console.error(err)

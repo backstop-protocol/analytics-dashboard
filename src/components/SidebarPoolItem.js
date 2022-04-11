@@ -64,8 +64,7 @@ function SidebarPoolItem ({poolStore}) {
           {poolStore.config.collateral} / {poolStore.config.coin}
         </PlatformSubTitle>
       </Flex>
-      <Flex column>
-        {/* <Apr>{poolStore.apr}% APR</Apr> */}
+      {/* <Flex column>
         <Apr>PnL</Apr>
         {poolStore.pnl && <UpOnly down={down}>
           <span>
@@ -73,7 +72,7 @@ function SidebarPoolItem ({poolStore}) {
             {!down && <UpArrow/>}
           </span> {poolStore.pnl}%
         </UpOnly>}
-      </Flex>
+      </Flex> */}
       <div data-tooltip={poolStore.config.comingSoon ? "coming soon" : null}>
         <input 
           disabled={poolStore.config.comingSoon}

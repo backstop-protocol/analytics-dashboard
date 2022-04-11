@@ -84,7 +84,7 @@ export const PnlTooltip = observer(({ active, payload, label }) => {
           <Flex column key={i}>
             <CustomTooltipSubTitle>
               <Circle color={item.color}/>
-              {item.dataKey}
+              Backstop LP Token Value
             </CustomTooltipSubTitle>
             <CustomTooltipValue>
               {item.value}

@@ -85,12 +85,12 @@ const Liquidation = observer(({data}) => {
   const parsedDate = new Date(date * 1000).toLocaleDateString()
   const pool = poolConfigs[bammId]
   if(!pool){
-    console.error(new Error(`failed to find pool: "${bammId}"`))
+    console.error(`failed to find pool: "${bammId}"`)
     return null
   }
   const collateralAsset = pool.collateral
   const debtAsset = pool.coin
-  if(mainStore.liquidationsHistoryFiltterAsset !== 'Assets' && mainStore.liquidationsHistoryFiltterAsset != debtAsset){
+  if(mainStore.liquidationsHistoryFiltterAsset !== 'Assets' && mainStore.liquidationsHistoryFiltterAsset != collateralAsset){
     return null
   }
   const url = pool.blockExplorer + '/tx/' + id
@@ -100,7 +100,6 @@ const Liquidation = observer(({data}) => {
       <td><TdText>{bammId}</TdText></td>
       <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
       <td><TdText><DisplayBn bn={debtAmount}/> {debtAsset}</TdText></td>
-      <td><TdText>107.33 %</TdText></td>
       <td><TdLink href={url} target="_blank">{id}</TdLink></td>
     </tr> 
   )
@@ -166,13 +165,18 @@ const timeOptions = [
   },
 ]
 
-const assetOptions = [{ label: "Assets", value: "Assets" }].concat(Object.values(poolConfigs).map(({coin})=> ({ label: coin, value: coin})))
+const assetOptions = [{ label: "Assets", value: "Assets" }]
+const collateralTypes = [...new Set(Object.values(poolConfigs)
+  .filter(({comingSoon}) => !comingSoon)
+  .map(({collateral})=> collateral))]
+collateralTypes.forEach(c=> assetOptions.push({label: c, value: c}))
 const {setLiquidationsHistoryFiltterAsset, setLiquidationsHistoryTimeFrame} = mainStore
 const LiquidationsSelector = () => {
   return (
     <Flex justifyBetween alignCenter>
       <LSText>See ALL</LSText>
       <Selector options={assetOptions} onChange={setLiquidationsHistoryFiltterAsset}/>
+      <LSText>In</LSText>
       <Selector options={timeOptions} onChange={setLiquidationsHistoryTimeFrame}/>
     </Flex>
   )
@@ -193,7 +197,6 @@ function LiquidationsHistory () {
             <th><MutedText>OWNER</MutedText></th>
             <th><MutedText>COLLATERAL</MutedText></th>
             <th><MutedText>DEBT</MutedText></th>
-            <th><MutedText>LIQUIDATION</MutedText></th>
             <th><MutedText>TRANSACTION</MutedText></th>
           </tr>
         </thead>

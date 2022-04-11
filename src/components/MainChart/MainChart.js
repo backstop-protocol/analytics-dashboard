@@ -87,7 +87,6 @@ const ChartHeader = observer(() => {
 
 function MainChart (props) {
   const data = mainStore.tvlData
-  debugger
   const interval = tickIntervalMap[mainStore.tvlChartScope]
   if(!data.length){
     return <article style={containerStyles} aria-busy="true"></article>
@@ -176,7 +175,7 @@ function MainChart (props) {
                 >
               </XAxis>
               <CartesianGrid horizontal={false} stroke="#ccc" strokeDasharray="5 5" />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<PnlTooltip />} />
               <Area
                   hide={!mainStore.pnlSwitch}
                   type="monotone"
