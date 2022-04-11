@@ -175,7 +175,7 @@ class MainStore {
       const poolsToFetch = this.pools.filter(p=> !p.config.comingSoon)
       this.loadingLiquidations = true
       const promises = poolsToFetch.map(async pool => {
-        const hours = this.liquidationsHistoryTimeFrame
+        const hours = this.liquidationsHistoryTimeFrame < 100 ? 100 : this.liquidationsHistoryTimeFrame
         const singlePoolPromises = []
         for (let i = 0; i < hours;  i = i + 1000){
           let query = hours < 1000 ? hours : 1000
