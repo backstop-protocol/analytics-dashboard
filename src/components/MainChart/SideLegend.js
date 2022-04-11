@@ -57,7 +57,7 @@ const legendItems = [
     name: "tvlSwitch"
   },
   {
-    label: "Liquidations",
+    label: "Total Liquidations",
     color: colorScheme.liquidations,
     name: 'liquidationsSwitch'
   },

@@ -80,7 +80,8 @@ const TdLink = styled.a`
 `
 
 const Liquidation = observer(({data}) => {
-  const {debtAmount, collateralAmount, blockNumber, bammId, date, id} = data
+  const {debtAmount, collateralAmount,
+     blockNumber, bammId, date, id} = data
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
   const parsedDate = new Date(date * 1000).toLocaleDateString()
   const pool = poolConfigs[bammId]
@@ -97,9 +98,12 @@ const Liquidation = observer(({data}) => {
   return (
     <tr className="fade-in-top">
       <td><TdText first={true}>{parsedDate}</TdText></td>
+      <td><TdText>{pool.network}</TdText></td>
+      <td><TdText>{pool.name}</TdText></td>
       <td><TdText>{bammId}</TdText></td>
       <td><TdText><DisplayBn bn={collateralAmount}/> {collateralAsset}</TdText></td>
       <td><TdText><DisplayBn bn={debtAmount}/> {debtAsset}</TdText></td>
+
       <td><TdLink href={url} target="_blank">{id}</TdLink></td>
     </tr> 
   )
@@ -194,6 +198,8 @@ function LiquidationsHistory () {
         <thead>
           <tr>
             <th><MutedText first={true}>DATE</MutedText></th>
+            <th><MutedText>NETWORK</MutedText></th>
+            <th><MutedText>PLATFORM</MutedText></th>
             <th><MutedText>OWNER</MutedText></th>
             <th><MutedText>COLLATERAL</MutedText></th>
             <th><MutedText>DEBT</MutedText></th>
@@ -205,7 +211,7 @@ function LiquidationsHistory () {
         </tbody>
       </table>
       }
-      {!liquidations.length && <SectionTitle className="fade-in-top" style={{textAlign: 'center', padding: '50px'}}>No Liquidations Yet</SectionTitle>}
+      {!liquidations.length && !mainStore.loadingLiquidations && <SectionTitle className="fade-in-top" style={{textAlign: 'center', padding: '50px'}}>No Liquidations Yet</SectionTitle>}
     </Container>
   )
 }

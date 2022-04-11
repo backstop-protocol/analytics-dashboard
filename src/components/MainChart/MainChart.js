@@ -135,16 +135,7 @@ function MainChart (props) {
                 strokeWidth="2"
                 fillOpacity="1"
                 fill="url(#MyGradient)"
-              />        
-              <Area
-                hide={hideImbalance}
-                type="monotone"
-                dataKey="imbalance"
-                stroke={colorScheme.imbalance}
-                strokeWidth="2"
-                fillOpacity="1"
-                fill="url(#MyGradient2)"
-              />        
+              />      
               <Area
                 hide={!mainStore.liquidationsSwitch}
                 type="monotone"
@@ -153,7 +144,16 @@ function MainChart (props) {
                 strokeWidth="2"
                 fillOpacity="1"
                 fill="url(#MyGradient3)"
-              />        
+              />       
+              <Area
+                hide={hideImbalance}
+                type="monotone"
+                dataKey="imbalance"
+                stroke={colorScheme.imbalance}
+                strokeWidth="2"
+                fillOpacity="1"
+                fill="url(#MyGradient2)"
+              />
             </AreaChart>
           </ResponsiveContainer>
           <ResponsiveContainer width="100%" height={50}>

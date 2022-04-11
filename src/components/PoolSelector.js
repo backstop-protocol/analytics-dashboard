@@ -41,7 +41,7 @@ function PoolSelector () {
   return (
     <div>
       <Flex column>
-        <MutedTitle>SELECT POOLS</MutedTitle>
+        <MutedTitle>SELECT BACKSTOP POOL</MutedTitle>
         {Object.entries(networks).map(([net, pools], i) => {
           return (<Fragment key={net}>
             <details open={i==0}>

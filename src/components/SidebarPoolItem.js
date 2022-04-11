@@ -56,12 +56,12 @@ function SidebarPoolItem ({poolStore}) {
       <IconWrapper>
         <img src={poolStore.icon} />
       </IconWrapper>
-      <Flex column>
+      <Flex column style={{minWidth: "100px"}}>
         <PlatformTitleStyle>
           {poolStore.config.name}
         </PlatformTitleStyle>        
         <PlatformSubTitle>
-          {poolStore.config.collateral} / {poolStore.config.coin}
+          {poolStore.config.coin} / {poolStore.config.collateral} 
         </PlatformSubTitle>
       </Flex>
       {/* <Flex column>
