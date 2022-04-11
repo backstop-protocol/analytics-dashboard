@@ -26,6 +26,17 @@ const ChartTitle = styled.span`
   color: #3F4765;
 `
 
+const ChartSubtitle = styled.div`
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 24px;
+
+color: #8F98B7;
+padding-bottom: 20px;
+`
+
+
 const ChartHeaderButton = styled.div`
   border: 1px solid #E5EBEF;
   box-sizing: border-box;
@@ -48,7 +59,6 @@ const ChartHeaderButton = styled.div`
 `
 
 const ChartHeaderContainer = styled.div`
-  margin-bottom: 20px;
 `
 
 const dateFormatter = (tickItem)=> {
@@ -73,10 +83,12 @@ const dateFormatter = (tickItem)=> {
 const ChartHeader = observer(() => {
   const {tvlChartScope: scope, setTvlChartScope} = mainStore
   const timeOptions = ['24H', '7D', '1M', 'MAX']
+  const {config} = mainStore.currentPool
+  const title = ' Pool Performance'
   return (
     <ChartHeaderContainer>
       <Flex justifyBetween>
-        <ChartTitle aria-busy={mainStore.loadingTvl}>Total Value Locked</ChartTitle>
+        <ChartTitle aria-busy={mainStore.loadingTvl}>{title}</ChartTitle>
         <Flex justifyAround style={{minWidth: '40%'}}>
           {timeOptions.map((t, index) => <ChartHeaderButton key={index} val={t} scope={scope} onClick={() => setTvlChartScope(t)}/>)}
         </Flex>
@@ -92,9 +104,12 @@ function MainChart (props) {
     return <article style={containerStyles} aria-busy="true"></article>
   }
   const hideImbalance = !mainStore.imbalanceSwitch || mainStore.currentPool.config.noImbalance
+  const {config} = mainStore.currentPool
+  const subTitle = config.name + ' ' + config.coin + ' Pool on   ' + config.network + ' ' 
   return (
     <article>
       <ChartHeader/>
+      <ChartSubtitle>{subTitle}</ChartSubtitle>
       <Flex justifyBetween>
         <div style={{width: '100%'}}>
           <ResponsiveContainer width="100%" height={300}>

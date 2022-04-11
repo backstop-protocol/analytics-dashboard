@@ -13,8 +13,9 @@ const Title = styled.div`
 
 function Navbar() {
   return (
-    <nav className="container-fluid">
-      <ul>
+    <nav>
+      <div className="container-fluid">
+      <ul >
         <li>
           <a href="#" style={{
             width: "200px",
@@ -67,9 +68,7 @@ function Navbar() {
           </Title>
         </li>
       </ul>
-      <ul>
-        <li><a href="#" className="secondary"></a></li>
-      </ul>
+      </div>
     </nav>
   )
 }
