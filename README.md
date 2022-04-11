@@ -1,3 +1,19 @@
+#  B.Protocol Analytics Dashboard
+uses:
+- react app
+- recharts charting library
+- the Graph hosted blockchain indexer
+
+# the Graph API endpoints (graphQL)
+ 
+0: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy"
+1: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm"
+2: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc"
+3: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth"
+4: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity"
+5: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom"
+6: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom"
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
