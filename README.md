@@ -6,13 +6,13 @@ uses:
 
 # the Graph API endpoints (graphQL)
  
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom"
-- "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom"
+- [bprotocol-liquity-legacy](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy)
+- [bprotocol-vesta-gohm](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-gohm)
+- [bprotocol-vesta-renbtc](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-renbtc)
+- [bprotocol-vesta-eth](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-vesta-eth)
+- [bprotocol-liquity](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity)"
+- [bprotocol-hundred-dai-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-dai-fantom)
+- [bprotocol-hundred-usdc-fantom](https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-fantom)
 
 # Getting Started with Create React App
 
