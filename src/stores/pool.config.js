@@ -1,15 +1,13 @@
-
-
 export const poolConfigs = {
-  "0x0d3abaa7e088c2c82f54b2f47613da438ea8c598": {
-    name: "Liquity legacy",
+  "0x00ff66ab8699aafa050ee5ef5041d1503aa0849a": {
+    name: "Liquity",
     icon: "Liquity",
     network: "Ethereum",
     blockExplorer: "https://etherscan.io/",
     coin: "LUSD",
     collateral: "ETH",
-    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity-legacy",
-    pnlBaseLine: "175.69"
+    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity",
+    pnlBaseLine: "3.11"
   },
   "0xebf8252756268091e523e57d293c0522b8afe66b": {
     name: "Vesta",
@@ -68,16 +66,6 @@ export const poolConfigs = {
   //   apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-hundred-usdc-arbitrum",
   //   pnlBaseLine: "1"
   // },
-  "0x00ff66ab8699aafa050ee5ef5041d1503aa0849a": {
-    name: "Liquity",
-    icon: "Liquity",
-    network: "Ethereum",
-    blockExplorer: "https://etherscan.io/",
-    coin: "LUSD",
-    collateral: "ETH",
-    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-liquity",
-    pnlBaseLine: "3.11"
-  },  
   "0x6d62d6af9b82cdfa3a7d16601ddbcf8970634d22": {
     name: "Hundred",
     icon: "Hundred",
