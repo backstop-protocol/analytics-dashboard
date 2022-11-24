@@ -1,4 +1,14 @@
 export const poolConfigs = {
+  "0x896d8a30C32eAd64f2e1195C2C8E0932Be7Dc20B": {
+    name: "Chicken Bonds",
+    icon: "cb-logo",
+    network: "Ethereum",
+    blockExplorer: "https://etherscan.io/",
+    coin: "LUSD",
+    collateral: "ETH",
+    apiUrl: "https://api.thegraph.com/subgraphs/name/shmuel-web/bprotocol-chicken-bonds",
+    pnlBaseLine: "0",
+  },
   "0x00ff66ab8699aafa050ee5ef5041d1503aa0849a": {
     name: "Liquity",
     icon: "Liquity",
