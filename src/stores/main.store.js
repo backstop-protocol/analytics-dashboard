@@ -196,6 +196,9 @@ class MainStore {
         }
         const results = await Promise.all(singlePoolPromises)
         const unifiedResults = results.reduce((a, b) => {
+          if(!b.data || !b.data.data || !b.data.data.liquidationEvents){
+            return a
+          }
           const {data: {liquidationEvents}} = b.data
           return a.concat(liquidationEvents)
         }, 
@@ -204,7 +207,8 @@ class MainStore {
           return r.debtAmount !== '0'
         })
       })
-      const liquidations = (await Promise.all(promises)).reduce((a, b) => {
+      const liquidationResults = await Promise.all(promises)
+      const liquidations = liquidationResults.reduce((a, b) => {
         return a.concat(b)
       }, [])
 
