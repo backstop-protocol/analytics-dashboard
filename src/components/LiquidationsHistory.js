@@ -4,7 +4,9 @@ import Flex, { FlexItem } from 'styled-flex-component';
 import {SectionTitle} from './styleComponents'
 import {DisplayBn} from './Utils'
 import mainStore from '../stores/main.store'
-import { poolConfigs } from '../stores/pool.config';
+import { poolConfigs as _poolConfigs} from '../stores/pool.config';
+
+const poolConfigs = Object.fromEntries(Object.entries(_poolConfigs).map(([k, v])=> [k.toLocaleLowerCase(), v])) // lowerCasing keys (BAMM address)
 
 const Container = styled.div`
   th {
@@ -84,7 +86,7 @@ const Liquidation = observer(({data}) => {
      blockNumber, bammId, date, id} = data
   // TODO missing data txHash collateralAsset debtAsset liquidationRatio
   const parsedDate = new Date(date * 1000).toLocaleDateString()
-  const pool = poolConfigs[bammId]
+  const pool = poolConfigs[bammId.toLocaleLowerCase()]
   if(!pool){
     console.error(`failed to find pool: "${bammId}"`)
     return null

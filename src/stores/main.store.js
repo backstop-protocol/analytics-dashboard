@@ -204,7 +204,8 @@ class MainStore {
           return r.debtAmount !== '0'
         })
       })
-      const liquidations = (await Promise.all(promises)).reduce((a, b) => {
+      const liquidationResults = await Promise.all(promises)
+      const liquidations = liquidationResults.reduce((a, b) => {
         return a.concat(b)
       }, [])
 
